@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { NatsModule } from 'src/nats/nats.module';
+import { NatsModule } from 'src/transports/nats.module';
 import { OrdersController } from './orders.controller';
 
 @Module({
