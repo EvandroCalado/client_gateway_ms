@@ -48,12 +48,6 @@ export class AuthController {
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
   verifyToken(@User() user: CurrentUser, @Token() token: string) {
-    console.log({ user, token });
-
-    return this.client.send('auth.verify.user', {}).pipe(
-      catchError((error) => {
-        throw new RpcException(error);
-      }),
-    );
+    return { user, token };
   }
 }
