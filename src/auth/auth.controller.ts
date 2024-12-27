@@ -6,12 +6,17 @@ import {
   HttpStatus,
   Inject,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { catchError } from 'rxjs';
 import { NATS_SERVICE } from 'src/configs/services.constant';
+import { Token } from './decorators/token.decorator';
+import { User } from './decorators/user.decorator';
 import { LoginUserDto } from './dto/login-user.dto';
 import { RegisterUserDto } from './dto/register-user.dto';
+import { AuthGuard } from './guards/auth.guard';
+import { CurrentUser } from './interfaces/current-user.interface';
 
 @Controller('auth')
 export class AuthController {
@@ -40,8 +45,11 @@ export class AuthController {
   }
 
   @Get('verify')
+  @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
-  verifyToken() {
+  verifyToken(@User() user: CurrentUser, @Token() token: string) {
+    console.log({ user, token });
+
     return this.client.send('auth.verify.user', {}).pipe(
       catchError((error) => {
         throw new RpcException(error);
